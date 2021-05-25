@@ -29,7 +29,8 @@ resource "aws_instance" "rordemo" {
                 EOF
 
   tags = {
-    Name = "terraform-basic-apache"
+    Name = "RoR-AWS-demo"
+    Stage = "Apache static"
   }
 }
 
