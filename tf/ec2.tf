@@ -10,8 +10,17 @@
 # add
     user_data = <<-EOF
                 #! /bin/bash
-                sudo yum update
-                sudo yum install -y httpd
+                sudo apt-get update
+                sudo apt-get install -y httpd
+                sudo apt-get install -y ruby node yarn
+
+                sudo add-apt-repository -y ppa:certbot/certbot
+
+
+                sudo apt-get install python-certbot-apache
+
+                sudo gem install rails
+
                 sudo chkconfig httpd on
                 sudo service httpd start
                 echo "<h1>hello world</h1>" | sudo tee /var/www/html/index.html
