@@ -6,7 +6,7 @@ resource "aws_instance" "rordemo" {
 
   key_name                    = "rorawsdemo"
   associate_public_ip_address = true
-  security_groups             = [aws_security_group.rorsec.id]
+  security_groups             = [aws_security_group.rorsec.name]
   iam_instance_profile        = aws_iam_instance_profile.rordemoprofile.id
 
   # add

@@ -8,8 +8,9 @@ Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and 
 
 ## Fun Facts
 
-- This [Github repo](https://github.com/stopthatastronaut/ror-aws-demo) is itself managed by Terraform, running from and source-controlled in Azure DevOps
-- The state was placed in an existing S3 bucket, controlled from the same Terraform config. That config deploys on merge to `main`, via PR, [githubflow](https://githubflow.github.io/) wise.
+- This [Github repo](https://github.com/stopthatastronaut/ror-aws-demo) is itself managed by Terraform, running from and source-controlled in Azure DevOps.
+- The state was placed in an existing S3 bucket, controlled from the same Terraform config.
+- The config deploys on merge to `main`, via PR, [githubflow](https://githubflow.github.io/) wise. `develop` is the one-developer hack-away-mate branch.
 - The UserData that builds the box was piloted in [Vagrant/virtualbox](https://vagrantup.com/) on a Macbook Pro
 - Having never built out a Rails box before, I drew on what I could from the documentation, meaning there could be all manner of idiosyncracies in here. IRL, I'd have a RoR developer on hand to assist with those questions - an important point. You can't just build an environment without knowing what your devs need (unless you're just doing a demo and/or showing off)
 - I was tempted to build a windows version just for fun, but AWS only does per-second billing for Linux, and Windows images tend to be more resource hungry. So I figured I'd save the beer money.
@@ -27,3 +28,4 @@ Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and 
 - Key rotation and management is an open question. So our dev moves on, right? But he's got a private key that means he can walk into this instance.
 
 [![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo)
+[![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo/tree/develop.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo/?branch=develop)
