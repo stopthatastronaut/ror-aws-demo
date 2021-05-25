@@ -38,7 +38,7 @@ jobs:
           paths:
             - .
 
-  test-demo:
+  post-test-demo:
     docker:
       - image: stopthatastronaut/sizzle-terraform
     steps:
