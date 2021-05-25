@@ -85,7 +85,7 @@ jobs:
 
 workflows:
   version: 2
-  plan_approve_apply:
+  plan_approve_apply_destroy:
     jobs:
       - plan-apply-demo
       - hold-apply-demo:
@@ -95,9 +95,15 @@ workflows:
           filters:
             branches:
               only: main
-      - apply-demo
-      - test-demo
-      - plan-destroy-demo
+      - apply-demo:
+          requires:
+            - hold-apply-demo
+      - post-test-demo:
+          requires:
+            - apply-demo
+      - plan-destroy-demo:
+          requires:
+            - apply-demo
       - hold-destroy-demo:
           type: approval
           requires:
@@ -105,4 +111,6 @@ workflows:
           filters:
             branches:
               only: main
-      - destroy-demo
+      - destroy-demo:
+          requires:
+            - hold-destroy-demo
