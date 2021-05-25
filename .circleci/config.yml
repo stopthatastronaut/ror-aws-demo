@@ -1,0 +1,116 @@
+﻿version: 2.1
+
+jobs:
+  plan-apply-demo:
+    working_directory: /tmp/project
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - checkout
+      - run:
+          name: Terraform init & plan
+          command: |
+            cd tf
+            cat /etc/*-release
+            az --version
+            terraform --version
+            terraform init -input=false
+            terraform plan
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  apply-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform Apply
+          command: |
+            cd tf
+            terraform init -input=false
+            terraform apply -auto-approve
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  post-test-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run post-deploy tests
+          command: |
+            cd ./tests
+            Invoke-Pester -CI
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  plan-destroy-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform Plan To Destroy
+          command: |
+            cd tf
+            terraform plan -destroy
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  destroy-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform Destroy
+          command: |
+            cd tf
+            terraform apply -auto-approve tfdestroy
+
+workflows:
+  version: 2
+  plan_approve_apply_destroy:
+    jobs:
+      - plan-apply-demo
+      - hold-apply-demo:
+          type: approval
+          requires:
+            - plan-apply-demo
+          filters:
+            branches:
+              only: main
+      - apply-demo:
+          requires:
+            - hold-apply-demo
+      - post-test-demo:
+          requires:
+            - apply-demo
+      - plan-destroy-demo:
+          requires:
+            - apply-demo
+      - hold-destroy-demo:
+          type: approval
+          requires:
+            - plan-destroy-demo
+          filters:
+            branches:
+              only: main
+      - destroy-demo:
+          requires:
+            - hold-destroy-demo
