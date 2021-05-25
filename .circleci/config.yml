@@ -4,7 +4,7 @@ jobs:
   plan-apply-demo:
     working_directory: /tmp/project
     docker:
-      - image: stopthatastronaut/sizzle-terraform
+      - image: stopthatastronaut/sta-terraform
     steps:
       - checkout
       - run:
@@ -23,7 +23,7 @@ jobs:
 
   apply-demo:
     docker:
-      - image: stopthatastronaut/sizzle-terraform
+      - image: stopthatastronaut/sta-terraform
     steps:
       - attach_workspace:
           at: .
@@ -40,7 +40,7 @@ jobs:
 
   post-test-demo:
     docker:
-      - image: stopthatastronaut/sizzle-terraform
+      - image: stopthatastronaut/sta-terraform
     steps:
       - attach_workspace:
           at: .
@@ -57,7 +57,7 @@ jobs:
 
   plan-destroy-demo:
     docker:
-      - image: stopthatastronaut/sizzle-terraform
+      - image: stopthatastronaut/sta-terraform
     steps:
       - attach_workspace:
           at: .
@@ -73,7 +73,7 @@ jobs:
 
   destroy-demo:
     docker:
-      - image: stopthatastronaut/sizzle-terraform
+      - image: stopthatastronaut/sta-terraform
     steps:
       - attach_workspace:
           at: .
