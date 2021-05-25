@@ -1,0 +1,108 @@
+﻿version: 2.1
+
+jobs:
+  plan-apply-demo:
+    working_directory: /tmp/project
+    docker:
+      - image: stopthatastronaut/sizzle-terraform
+    steps:
+      - checkout
+      - run:
+          name: Terraform init & plan
+          command: |
+            cd tf
+            cat /etc/*-release
+            az --version
+            terraform --version
+            terraform init -input=false
+            terraform plan
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  apply-demo:
+    docker:
+      - image: stopthatastronaut/sizzle-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform Apply
+          command: |
+            cd tf
+            terraform init -input=false
+            terraform apply -auto-approve
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  test-demo:
+    docker:
+      - image: stopthatastronaut/sizzle-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run post-deploy tests
+          command: |
+            cd ./tests
+            Invoke-Pester -CI
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  plan-destroy-demo:
+    docker:
+      - image: stopthatastronaut/sizzle-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform Plan To Destroy
+          command: |
+            cd tf
+            terraform plan -destroy
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  destroy-demo:
+    docker:
+      - image: stopthatastronaut/sizzle-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform Destroy
+          command: |
+            cd tf
+            terraform apply -auto-approve tfdestroy
+
+workflows:
+  version: 2
+  plan_approve_apply:
+    jobs:
+      - plan-apply-demo
+      - hold-apply-demo:
+          type: approval
+          requires:
+            - plan-apply-npe
+          filters:
+            branches:
+              only: master
+      - apply-demo
+      - test-demo
+      - plan-destroy-demo
+      - hold-destroy-demo:
+          type: approval
+          requires:
+            - plan-apply-npe
+          filters:
+            branches:
+              only: master
+      - destroy-demo
