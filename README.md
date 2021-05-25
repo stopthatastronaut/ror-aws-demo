@@ -4,7 +4,7 @@ A very basic demo of running a simple Ruby On Rails app on EC2.
 
 ## Current:
 
-Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone. Installs Apache and a basic hello page. TODO: the Ruby On Rails Hello app.
+Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and a few other bits). Installs Apache and a basic hello page. TODO: the Ruby On Rails Hello app.
 
 ## Fun Facts
 
@@ -22,6 +22,8 @@ Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone. Inst
 - Place the instance behind an ALB or ELB for improved security and the opportunity to scale out
 - Add an Octopus Tentacle, to enable delivery
 - swap out some variable formatting (Azure DevOps coerces ENV_VARS to upper case, for instance, so this CI chain may constitute a bug)
-- Creating PEM keys and finding the appropriate AMI are tony tricky things that could always be done better.
+- Creating PEM keys and finding the appropriate AMI are tiny tricky things that could always be done better.
+- The UserData/LaunchConfig might be better pulled from S3. At least you can run some kind of testing on it ahead of time that way.
+- Key rotation and management is an open question. So our dev moves on, right? But he's got a private key that means he can walk into this instance.
 
 [![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo)
