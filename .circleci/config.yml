@@ -45,11 +45,12 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run post-deploy tests
+          name: Run post deploy tests
           command: |
             pwsh
             cd ./tests
             Invoke-Pester -CI
+          shell: pwsh
 
       - persist_to_workspace:
           root: .
