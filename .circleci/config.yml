@@ -47,6 +47,7 @@ jobs:
       - run:
           name: Run post-deploy tests
           command: |
+            pwsh
             cd ./tests
             Invoke-Pester -CI
 

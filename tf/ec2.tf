@@ -6,6 +6,7 @@
 
     key_name = "rorawsdemo"
     associate_public_ip_address = true
+    security_groups = [aws_security_group.rorsec.id]
 
 # add
     user_data = <<-EOF
@@ -33,8 +34,8 @@
 
 variable "ssh_in_cidr" {}
 
-resource "aws_security_group" "instance" {
-    name = "terraform-example-instance"
+resource "aws_security_group" "rorsec" {
+    name = "rorinstancesec"
     ingress {
         from_port = 80
         to_port = 80
