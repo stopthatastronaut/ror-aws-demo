@@ -91,18 +91,18 @@ workflows:
       - hold-apply-demo:
           type: approval
           requires:
-            - plan-apply-npe
+            - plan-apply-demo
           filters:
             branches:
-              only: master
+              only: main
       - apply-demo
       - test-demo
       - plan-destroy-demo
       - hold-destroy-demo:
           type: approval
           requires:
-            - plan-apply-npe
+            - plan-destroy-demo
           filters:
             branches:
-              only: master
+              only: main
       - destroy-demo
