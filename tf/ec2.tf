@@ -1,5 +1,5 @@
 ﻿resource "aws_instance" "rordemo" {
-    ami = "ami-075fd316de7fe7d98"
+    ami = "ami-0585c832178a3fc32"
     instance_type = "t3.micro"
     # current pricing suggests t3.micro is cheap and will work for demo purposes
     # and qualifies for per-second billing so I can't possibly go bankrupt :)
