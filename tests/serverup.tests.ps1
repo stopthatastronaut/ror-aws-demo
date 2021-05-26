@@ -23,5 +23,12 @@ Describe "The server should be up" {
         }
     }
 
+    It "Can be contacted via SSH" {
+        {
+            ssh ubuntu@$global:DNSTarget
+            rails -v
+            exit
+        } | Should Not Throw
+    }
 
 }

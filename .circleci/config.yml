@@ -42,6 +42,9 @@ jobs:
     docker:
       - image: stopthatastronaut/sta-terraform
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "71:fd:60:95:ce:b9:53:61:3d:fe:a6:98:9a:0a:52:57"
       - attach_workspace:
           at: .
       - run:

@@ -26,6 +26,7 @@ Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and 
 - Creating PEM keys and finding the appropriate AMI are tiny tricky things that could always be done better.
 - The UserData/LaunchConfig might be better pulled from S3. At least you can run some kind of testing on it ahead of time that way.
 - Key rotation and management is an open question. So our dev moves on, right? But he's got a private key that means he can walk into this instance.
+- There;s a bunch of inefficiency in the CI. I'd want that fixed.
 
 [![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo)
 [![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo/tree/develop.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo/?branch=develop)
