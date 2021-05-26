@@ -1,10 +1,23 @@
 ﻿$global:DNSTarget = "rorawsdemo.takofukku.io" # keep this here, contexts are important
 
-if (-not (Get-Module -ListAvailable AWSPowerShell)) {
-    Install-Module AWSPowerShell
+Function Install-IfNeeded {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline = $true)]
+        $modulename
+    )
+    begin {}
+    process {
+        if (-not (Get-Module -ListAvailable $_)) {
+            Install-Module $_
+        }
+    }
+    end {}
 }
 
-Import-Module AWSPowerSHell
+@('awspowershell', 'pester') | Install-IfNeeded -Verbose
+
+Import-Module AWSPowerShell
 
 
 Describe "The server should be up" {
