@@ -1,5 +1,11 @@
 ﻿$global:DNSTarget = "rorawsdemo.takofukku.io" # keep this here, contexts are important
 
+if (-not (Get-Module -ListAvailable AWSPowerShell)) {
+    Install-Module AWSPowerShell
+}
+
+Import-Module AWSPowerSHell
+
 
 Describe "The server should be up" {
 
@@ -23,12 +29,28 @@ Describe "The server should be up" {
         }
     }
 
+
+
+}
+
+Describe "SSH in and have a  look" {
+    BeforeEach {
+        # add this IP address to our sec group
+        $thisip = Invoke-RestMethod http://canhazip.com/
+
+        aws ec2 authorize-security-group-ingress --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
+
+    }
+
     It "Can be contacted via SSH" {
         {
             ssh ubuntu@$global:DNSTarget
             rails -v
             exit
         } | Should Not Throw
-    }
+    } -skip    # need to figure out the IP we're coming from and add that to the Sec group. Tricky, but doable. Time consuming too.
 
+    AfterEach {
+        as ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
+    }
 }
