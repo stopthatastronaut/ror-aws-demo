@@ -50,8 +50,8 @@ jobs:
       - run:
           name: Run post deploy tests
           command: |
-            pwsh
             cd ./tests
+            Import-Module Pester
             Invoke-Pester -CI
           shell: pwsh
 
@@ -86,7 +86,7 @@ jobs:
           name: Terraform Destroy
           command: |
             cd tf
-            terraform apply -auto-approve tfdestroy
+            terraform destroy -auto-approve
 
 workflows:
   version: 2
