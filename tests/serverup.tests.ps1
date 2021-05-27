@@ -44,10 +44,16 @@ Describe "The server should be up and serving HTML" {
     It "Should reject port 3389" {
         $caught = $false
         try {
-            new-object System.Net.Sockets.TcpClient("$global:DNSTarget", 3389)
+            $client = new-object System.Net.Sockets.TcpClient
+            $client.ReceiveTimeout = 20000 # 20s timeout
+            $client.connect("$global:DNSTarget", 3389)
         }
         catch {
             $caught = $true
+        }
+        finally {
+            $client.Close()
+            $client.Finalize()
         }
 
         $caught | Should -Be $true
@@ -59,12 +65,16 @@ Describe "The server should be up and serving HTML" {
             $caught = $false
             try {
                 $client = new-object System.Net.Sockets.TcpClient
-                $client.ReceiveTimeout = 20 # 20s timeout
+                $client.ReceiveTimeout = 20000 # 20s timeout
 
                 $client.Connect("$global:DNSTarget", 22)
             }
             catch {
                 $caught = $true
+            }
+            finally {
+                $client.Close()
+                $client.Finalize()
             }
 
             $caught | Should -Be $true
@@ -86,19 +96,19 @@ Describe "SSH in and have a  look" {
     BeforeEach {
         # add this IP address to our sec group
         $thisip = Invoke-RestMethod http://canhazip.com/
+        $ip = $thisip.trim()
 
-        aws ec2 authorize-security-group-ingress --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32 --region ap-southeast-2
+        aws ec2 authorize-security-group-ingress --group-name rorinstancesec --protocol tcp --port 22 --cidr "$ip/32" --region ap-southeast-2
 
     }
 
     It "Can be contacted via SSH and should have rails" {
-        {
-            ssh ubuntu@$global:DNSTarget 'rails -v'
-        } | Should -Not -Throw
+        $output = ssh ubuntu@$global:DNSTarget -E f.txt 'rails -v' 2>&1
+        $output | Should -Not -BeLike "*command not found*"
     }
 
 
     AfterEach {
-        aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32 --region ap-southeast-2
+        aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr "$ip/32" --region ap-southeast-2
     }
 }
