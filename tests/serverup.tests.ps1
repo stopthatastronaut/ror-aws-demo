@@ -16,6 +16,7 @@ Function Install-IfNeeded {
     end {}
 }
 
+Set-PSRepository PSGallery -InstallationPolicy Trusted
 @('awspowershell', 'pester') | Install-IfNeeded -Verbose
 
 Import-Module AWSPowerShell
@@ -29,13 +30,29 @@ Describe "The server should be up" {
     }
 
     It "Should reject port 3389" {
-        new-object System.Net.Sockets.TcpClient("$global:DNSTarget", 3389)  | Should -Be $null
+        $caught = $false
+        try {
+            new-object System.Net.Sockets.TcpClient("$global:DNSTarget", 3389)
+        }
+        catch {
+            $caught = $true
+        }
+
+        $caught | Should -Be $true
     }
 
     It "Should not be reacahable on 22 from CI" {
         $ip = Invoke-RestMethod -uri http://canhazip.com/
         if ($ip -ne $env:TF_VAR_ssh_in_cidr) {
-            new-object System.Net.Sockets.TcpClient("$global:DNSTarget", 3389)  | Should -Be $null
+            $caught = $false
+            try {
+                new-object System.Net.Sockets.TcpClient("$global:DNSTarget", 22)
+            }
+            catch {
+                $caught = $true
+            }
+
+            $caught | Should -Be $true
         }
         else {
             Write-Warning "Tests running from the SSH_IN_CIDR location, skipping with a warning"

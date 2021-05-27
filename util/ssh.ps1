@@ -1,0 +1,1 @@
+﻿ssh -i ~/rorawsdemo.pem ubuntu@rorawsdemo.takofukku.io
