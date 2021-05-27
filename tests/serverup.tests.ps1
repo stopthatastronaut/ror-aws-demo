@@ -32,10 +32,10 @@ Describe "The server should be up and serving HTML" {
         $resp = ""
         while ($ready -eq $false -and $sleeptime -lt 360) {
             # try, then pause and retry, because we might outrace the user data
-            $resp = Invoke-WebRequest -uri http://$global:DNSTarget/ -verbose | Select-Object -expand Content
+            $resp = Invoke-WebRequest -uri http://$global:DNSTarget/ | Select-Object -expand Content
             if ($resp -like $match) { break }
             Start-Sleep -Seconds $sleeptime
-            Write-Host "waiting $sleeptime"
+            Write-Output "waiting $sleeptime"
             $sleeptime = $sleeptime * 2
         }
         $resp | Should -BeLike $match
