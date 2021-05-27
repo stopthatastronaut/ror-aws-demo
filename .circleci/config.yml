@@ -37,7 +37,7 @@ jobs:
             cd ./tests
             if (-not (Get-Module -ListAvailable Pester)) {
                 Write-Output "Installing Pester"
-                Install-Module Pester
+                Install-Module Pester -force
             }
             Import-Module Pester
           shell: pwsh
@@ -80,7 +80,7 @@ jobs:
 
             if (-not (Get-Module -ListAvailable Pester)) {
                 Write-Output "Installing Pester"
-                Install-Module Pester
+                Install-Module Pester -force
             }
 
             Import-Module Pester
