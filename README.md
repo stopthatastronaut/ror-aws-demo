@@ -4,16 +4,23 @@ A very basic demo of running a simple Ruby On Rails app on EC2.
 
 ## Current:
 
-Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and a few other bits). Installs Apache and a basic hello page. TODO: the Ruby On Rails Hello app.
+Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and a few other bits).
+
+- Installs Apache and a basic hello page.
+- Can be SSH'd to if you have the right key (and your IP is whitelisted in the sec group)
+- Has an instance profile, for access to S3 (for instance, to grab source code for a large-ish rails app)
+- Fires up at location [rorawsdemo.takofukku.io](http://rorawsdemo.takofukku.io)
+
+TODO: the Ruby On Rails Hello app.
 
 ## Fun Facts
 
-- This [Github repo](https://github.com/stopthatastronaut/ror-aws-demo) is itself managed by Terraform, running from and source-controlled in Azure DevOps.
+- This [Github repo](https://github.com/stopthatastronaut/ror-aws-demo) is itself managed by Terraform, running from and source-controlled in Azure DevOps, with state in Azure Storage
 - The state was placed in an existing S3 bucket, controlled from the same Terraform config.
-- The config deploys on merge to `main`, via PR, [githubflow](https://githubflow.github.io/) wise. `develop` is the one-developer hack-away-mate branch.
+- The config deploys on merge to `main`, via PR, [githubflow](https://githubflow.github.io/) wise. `develop` is the one-developer "hack away at it mate" branch.
 - The UserData that builds the box was [piloted in](https://github.com/stopthatastronaut/VagrantLab/tree/master/Ubuntu1804Rails) [Vagrant/virtualbox](https://vagrantup.com/) on a Macbook Pro
 - Having never built out a Rails box before, I drew on what I could from the documentation, meaning there could be all manner of idiosyncracies in here. IRL, I'd have a RoR developer on hand to assist with those questions - an important point. You can't just build an environment without knowing what your devs need (unless you're just doing a demo and/or showing off)
-- I was tempted to build a windows version just for fun, but AWS only does per-second billing for Linux, and Windows images tend to be more resource hungry. So I figured I'd save the beer money.
+- I was tempted to build out a Windows version just for fun, but AWS only does per-second billing for Linux, and Windows images tend to be more resource hungry. So I figured I'd save the beer money. For now.
 
 ## Possible Enhancements and/or notable bugs and bugbears
 
