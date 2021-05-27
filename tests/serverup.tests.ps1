@@ -92,7 +92,7 @@ Describe "SSH in and have a  look" {
         {
             ssh ubuntu@$global:DNSTarget 'rails -v'
         } | Should Not Throw
-    } -skip
+    }
 
 
     AfterEach {
