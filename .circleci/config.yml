@@ -126,16 +126,13 @@ workflows:
     jobs:
       - plan-apply-demo
       - pre-test-demo
-      - hold-apply-demo:
-          type: approval
+      - apply-demo:
           requires:
             - plan-apply-demo
+            - pre-test-demo
           filters:
             branches:
               only: main
-      - apply-demo:
-          requires:
-            - hold-apply-demo
       - post-test-demo:
           requires:
             - apply-demo
