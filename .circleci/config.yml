@@ -21,6 +21,27 @@ jobs:
           paths:
             - .
 
+  pre-test-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "71:fd:60:95:ce:b9:53:61:3d:fe:a6:98:9a:0a:52:57"
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run post deploy tests
+          command: |
+            cd ./tests
+            Import-Module Pester
+          shell: pwsh
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
   apply-demo:
     docker:
       - image: stopthatastronaut/sta-terraform
@@ -93,6 +114,7 @@ workflows:
   plan_approve_apply_destroy:
     jobs:
       - plan-apply-demo
+      - pre-test-demo
       - hold-apply-demo:
           type: approval
           requires:
