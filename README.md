@@ -2,7 +2,7 @@
 
 A very basic demo of running a simple Ruby On Rails app on EC2.
 
-## Current:
+## Current State
 
 Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and a few other bits).
 

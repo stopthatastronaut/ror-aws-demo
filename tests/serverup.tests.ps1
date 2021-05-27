@@ -53,7 +53,6 @@ Describe "The server should be up and serving HTML" {
         }
         finally {
             $client.Close()
-            $client.Finalize()
         }
 
         $caught | Should -Be $true
@@ -74,7 +73,6 @@ Describe "The server should be up and serving HTML" {
             }
             finally {
                 $client.Close()
-                $client.Finalize()
             }
 
             $caught | Should -Be $true
