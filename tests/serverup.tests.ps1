@@ -26,7 +26,19 @@ Describe "The server should be up" {
 
     It "Should respond on Port 80" {
         if ($null -eq $global:DNSTarget) { EXIT "BAD URL TO CHECK " }
-        Invoke-WebRequest -uri http://$global:DNSTarget/ | Select-Object -expand Content | Should -Be "<h1>hello world</h1>"
+        $match = "<h1>hello world</h1>*"
+        # try, then pause and retry, because we might outrace the user data
+        $ready = $false
+        $sleeptime = 10 # seconds
+        $resp = ""
+        while ($ready -eq $false -and $sleeptime -lt 360 -and $resp -notlike $match) {
+            $resp = Invoke-WebRequest -uri http://$global:DNSTarget/ -verbose | Select-Object -expand Content
+            if ($resp -like $match) { break }
+            Start-Sleep -Seconds $sleeptime
+            Write-Host "waiting $sleeptime"
+            $sleeptime = $sleeptime * 2
+        }
+        $resp | Should -BeLike $match
     }
 
     It "Should reject port 3389" {

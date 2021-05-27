@@ -24,6 +24,7 @@ TODO: the Ruby On Rails Hello app.
 
 ## Possible Enhancements and/or notable bugs and bugbears
 
+- switch to nginx from Apache?
 - Instead of building an EC2 instance which is deployed to multiple times, it could build an immutable AMI or Docker image, which would be better from a dependency point of view
 - Building that AMI/Docker image could literally happen from CI on commit/PR
 - Additional post-deploy tests
