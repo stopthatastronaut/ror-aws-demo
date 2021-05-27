@@ -11,6 +11,8 @@ Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and 
 - Has an instance profile, for access to S3 (for instance, to grab source code for a large-ish rails app)
 - Fires up at location [rorawsdemo.takofukku.io](http://rorawsdemo.takofukku.io)
 
+![CircleCI Pipeline](/pipeline.png)
+
 TODO: the Ruby On Rails Hello app.
 
 ## Fun Facts
