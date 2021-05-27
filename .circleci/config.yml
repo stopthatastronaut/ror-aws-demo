@@ -32,9 +32,13 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run post deploy tests
+          name: Run pre deploy tests
           command: |
             cd ./tests
+            if (-not (Get-Module -ListAvailable Pester)) {
+                Write-Output "Installing Pester"
+                Install-Module Pester
+            }
             Import-Module Pester
           shell: pwsh
 
@@ -73,6 +77,12 @@ jobs:
           name: Run post deploy tests
           command: |
             cd ./tests
+
+            if (-not (Get-Module -ListAvailable Pester)) {
+                Write-Output "Installing Pester"
+                Install-Module Pester
+            }
+
             Import-Module Pester
             Invoke-Pester -CI
           shell: pwsh
