@@ -21,6 +21,32 @@ jobs:
           paths:
             - .
 
+  pre-test-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "71:fd:60:95:ce:b9:53:61:3d:fe:a6:98:9a:0a:52:57"
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run pre deploy tests
+          command: |
+            cd ./tests
+            if (-not (Get-Module -ListAvailable Pester)) {
+                Write-Output "Installing Pester"
+                Install-Module Pester -force
+            }
+            Import-Module Pester
+          shell: pwsh
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
   apply-demo:
     docker:
       - image: stopthatastronaut/sta-terraform
@@ -51,6 +77,12 @@ jobs:
           name: Run post deploy tests
           command: |
             cd ./tests
+
+            if (-not (Get-Module -ListAvailable Pester)) {
+                Write-Output "Installing Pester"
+                Install-Module Pester -force
+            }
+
             Import-Module Pester
             Invoke-Pester -CI
           shell: pwsh
@@ -93,6 +125,7 @@ workflows:
   plan_approve_apply_destroy:
     jobs:
       - plan-apply-demo
+      - pre-test-demo
       - hold-apply-demo:
           type: approval
           requires:
