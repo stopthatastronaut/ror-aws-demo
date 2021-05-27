@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Run pre deploy tests
           command: |
-            cd ./tests
+            # just check if pester is installed on the image
             if (-not (Get-Module -ListAvailable Pester)) {
                 Write-Output "Installing Pester"
                 Install-Module Pester -force
@@ -84,7 +84,7 @@ jobs:
             }
 
             Import-Module Pester
-            Invoke-Pester -CI
+            Invoke-Pester -CI -Output Detailed
           shell: pwsh
 
       - persist_to_workspace:

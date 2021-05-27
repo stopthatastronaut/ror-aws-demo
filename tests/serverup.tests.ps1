@@ -17,7 +17,7 @@ Function Install-IfNeeded {
 }
 
 Set-PSRepository PSGallery -InstallationPolicy Trusted
-@('awspowershell', 'pester') | Install-IfNeeded -Verbose
+@('awspowershell') | Install-IfNeeded -Verbose
 
 Import-Module AWSPowerShell
 
@@ -60,6 +60,9 @@ Describe "The server should be up" {
         }
     }
 
+    It "Should have a valid DNS name" {
+        # this is implicitly true if prior tests pass
+    } -skip
 
 
 }
@@ -73,7 +76,7 @@ Describe "SSH in and have a  look" {
 
     }
 
-    It "Can be contacted via SSH" {
+    It "Can be contacted via SSH and should have rails" {
         {
             ssh ubuntu@$global:DNSTarget
             rails -v
@@ -82,6 +85,6 @@ Describe "SSH in and have a  look" {
     } -skip    # need to figure out the IP we're coming from and add that to the Sec group. Tricky, but doable. Time consuming too.
 
     AfterEach {
-        as ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
+        aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
     }
 }
