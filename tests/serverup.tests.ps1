@@ -9,6 +9,7 @@ Function Install-IfNeeded {
     begin {}
     process {
         if (-not (Get-Module -ListAvailable $_)) {
+            Write-Output "Installing $_"
             Install-Module $_
         }
     }
