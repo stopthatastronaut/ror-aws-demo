@@ -22,7 +22,7 @@ Set-PSRepository PSGallery -InstallationPolicy Trusted
 Import-Module AWSPowerShell
 
 
-Describe "The server should be up" {
+Describe "The server should be up and serving HTML" {
 
     It "Should respond on Port 80" {
         if ($null -eq $global:DNSTarget) { EXIT "BAD URL TO CHECK " }
@@ -53,12 +53,15 @@ Describe "The server should be up" {
         $caught | Should -Be $true
     }
 
-    It "Should not be reacahable on 22 from CI" {
+    It "Should not be reachable on 22 from CI" {
         $ip = Invoke-RestMethod -uri http://canhazip.com/
         if ($ip -ne $env:TF_VAR_ssh_in_cidr) {
             $caught = $false
             try {
-                new-object System.Net.Sockets.TcpClient("$global:DNSTarget", 22)
+                $client = new-object System.Net.Sockets.TcpClient
+                $client.ReceiveTimeout = 20 # 20s timeout
+
+                $client.Connect("$global:DNSTarget", 22)
             }
             catch {
                 $caught = $true
@@ -84,18 +87,18 @@ Describe "SSH in and have a  look" {
         # add this IP address to our sec group
         $thisip = Invoke-RestMethod http://canhazip.com/
 
-        aws ec2 authorize-security-group-ingress --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
+        aws ec2 authorize-security-group-ingress --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32 --region ap-southeast-2
 
     }
 
     It "Can be contacted via SSH and should have rails" {
         {
             ssh ubuntu@$global:DNSTarget 'rails -v'
-        } | Should Not Throw
+        } | Should -Not -Throw
     }
 
 
     AfterEach {
-        aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
+        aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32 --region ap-southeast-2
     }
 }

@@ -10,6 +10,7 @@ Builds a VM, a Sec Group, and a DNS name based on an existing Route53 Zone (and 
 - Can be SSH'd to if you have the right key (and your IP is whitelisted in the sec group)
 - Has an instance profile, for access to S3 (for instance, to grab source code for a large-ish rails app)
 - Fires up at location [rorawsdemo.takofukku.io](http://rorawsdemo.takofukku.io)
+- Runs in CircleCI
 
 ![CircleCI Pipeline](/pipeline.png)
 
@@ -39,4 +40,3 @@ TODO: the Ruby On Rails Hello app.
 - There's a bunch of inefficiency in the CI. I'd want that fixed.
 
 [![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo)
-[![CircleCI](https://circleci.com/gh/stopthatastronaut/ror-aws-demo/tree/develop.svg?style=svg)](https://circleci.com/gh/stopthatastronaut/ror-aws-demo/?branch=develop)
