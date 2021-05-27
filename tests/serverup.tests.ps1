@@ -27,11 +27,11 @@ Describe "The server should be up" {
     It "Should respond on Port 80" {
         if ($null -eq $global:DNSTarget) { EXIT "BAD URL TO CHECK " }
         $match = "<h1>hello world</h1>*"
-        # try, then pause and retry, because we might outrace the user data
         $ready = $false
         $sleeptime = 10 # seconds
         $resp = ""
-        while ($ready -eq $false -and $sleeptime -lt 360 -and $resp -notlike $match) {
+        while ($ready -eq $false -and $sleeptime -lt 360) {
+            # try, then pause and retry, because we might outrace the user data
             $resp = Invoke-WebRequest -uri http://$global:DNSTarget/ -verbose | Select-Object -expand Content
             if ($resp -like $match) { break }
             Start-Sleep -Seconds $sleeptime
@@ -90,11 +90,10 @@ Describe "SSH in and have a  look" {
 
     It "Can be contacted via SSH and should have rails" {
         {
-            ssh ubuntu@$global:DNSTarget
-            rails -v
-            exit
+            ssh ubuntu@$global:DNSTarget 'rails -v'
         } | Should Not Throw
-    } -skip    # need to figure out the IP we're coming from and add that to the Sec group. Tricky, but doable. Time consuming too.
+    } -skip
+
 
     AfterEach {
         aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr $thisip/32
