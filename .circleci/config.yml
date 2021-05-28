@@ -128,7 +128,7 @@ workflows:
       - pre-test-demo
       - plan-apply-demo
           requires:
-            pre-test-demo
+            - pre-test-demo
       - apply-demo:
           requires:
             - plan-apply-demo
