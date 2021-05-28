@@ -101,7 +101,7 @@ Describe "SSH in and have a  look" {
     }
 
     It "Should have Python installed" {
-        ssh  -o "StrictHostKeyChecking=no" -i ~/rorawsdemo.pem ubuntu@rorawsdemo.takofukku.io -E f.txt 'python -V ' 2>&1 | Should -BeLike "Python 3*"
+        ssh  -o "StrictHostKeyChecking=no" -E f.txt 'python -V ' 2>&1 | Should -BeLike "Python 3*"
     }
 
     It "Can be contacted via SSH and should have rails" {
