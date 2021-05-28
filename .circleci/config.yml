@@ -1,27 +1,8 @@
 ﻿version: 2.1
 
 jobs:
-  plan-apply-demo:
-    working_directory: /tmp/project
-    docker:
-      - image: stopthatastronaut/sta-terraform
-    steps:
-      - checkout
-      - run:
-          name: Terraform init & plan
-          command: |
-            cd tf
-            cat /etc/*-release
-            az --version
-            terraform --version
-            terraform init -input=false
-            terraform plan
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
   pre-test-demo:
+    working_directory: /tmp/project
     docker:
       - image: stopthatastronaut/sta-terraform
     steps:
@@ -42,6 +23,26 @@ jobs:
             Import-Module Pester
           shell: pwsh
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  plan-apply-demo:
+    docker:
+      - image: stopthatastronaut/sta-terraform
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform init & plan
+          command: |
+            cd tf
+            cat /etc/*-release
+            az --version
+            terraform --version
+            terraform init -input=false
+            terraform plan
       - persist_to_workspace:
           root: .
           paths:
@@ -124,12 +125,13 @@ workflows:
   version: 2
   plan_approve_apply_destroy:
     jobs:
-      - plan-apply-demo
       - pre-test-demo
+      - plan-apply-demo:
+          requires:
+            - pre-test-demo
       - apply-demo:
           requires:
             - plan-apply-demo
-            - pre-test-demo
           filters:
             branches:
               only: main
