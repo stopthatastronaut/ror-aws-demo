@@ -126,7 +126,7 @@ workflows:
   plan_approve_apply_destroy:
     jobs:
       - pre-test-demo
-      - plan-apply-demo
+      - plan-apply-demo:
           requires:
             - pre-test-demo
       - apply-demo:
