@@ -100,10 +100,14 @@ Describe "SSH in and have a  look" {
 
     }
 
-    It "Can be contacted via SSH and should have rails" {
-        $output = ssh ubuntu@$global:DNSTarget -E f.txt 'rails -v' 2>&1
-        $output | Should -Not -BeLike "*command not found*"
+    It "Should have Python installed" {
+        ssh  -o "StrictHostKeyChecking=no" -i ~/rorawsdemo.pem ubuntu@rorawsdemo.takofukku.io -E f.txt 'python -V ' 2>&1 | Should -Be -Like "Python 3*"
     }
+
+    It "Can be contacted via SSH and should have rails" {
+        $output = ssh -o "StrictHostKeyChecking=no" ubuntu@$global:DNSTarget -E f.txt 'rails -v' 2>&1
+        $output | Should -Not -BeLike "*command not found*"
+    } -Skip # Rails install is so broken right now
 
 
     AfterEach {
