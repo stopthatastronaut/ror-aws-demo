@@ -12,3 +12,5 @@
 .secrets
 .scratch
 f.txt
+
+.DS_Store

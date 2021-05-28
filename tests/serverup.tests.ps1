@@ -101,7 +101,7 @@ Describe "SSH in and have a  look" {
     }
 
     It "Should have Python installed" {
-        ssh  -o "StrictHostKeyChecking=no" -i ~/rorawsdemo.pem ubuntu@rorawsdemo.takofukku.io -E f.txt 'python -V ' 2>&1 | Should -Be -Like "Python 3*"
+        ssh  -o "StrictHostKeyChecking=no" -i ~/rorawsdemo.pem ubuntu@rorawsdemo.takofukku.io -E f.txt 'python -V ' 2>&1 | Should -BeLike "Python 3*"
     }
 
     It "Can be contacted via SSH and should have rails" {
@@ -112,5 +112,32 @@ Describe "SSH in and have a  look" {
 
     AfterEach {
         aws ec2 revoke-security-group-ingress  --group-name rorinstancesec --protocol tcp --port 22 --cidr "$ip/32" --region ap-southeast-2
+    }
+}
+
+Describe "We closed SSH ports again after running tests" {
+    It "Should not be reachable on 22 from CI" {
+        $ip = Invoke-RestMethod -uri http://canhazip.com/
+        if ($ip -ne $env:TF_VAR_ssh_in_cidr) {
+            $caught = $false
+            try {
+                $client = new-object System.Net.Sockets.TcpClient
+                $client.ReceiveTimeout = 20000 # 20s timeout
+
+                $client.Connect("$global:DNSTarget", 22)
+            }
+            catch {
+                $caught = $true
+            }
+            finally {
+                $client.Close()
+            }
+
+            $caught | Should -Be $true
+        }
+        else {
+            Write-Warning "Tests running from the SSH_IN_CIDR location, skipping with a warning"
+            return true
+        }
     }
 }
